@@ -1,6 +1,6 @@
 package com.openclassrooms.starterjwt.payload.request;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 import lombok.Data;
 
