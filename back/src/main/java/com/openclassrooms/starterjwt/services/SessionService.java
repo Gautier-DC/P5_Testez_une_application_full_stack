@@ -8,6 +8,7 @@ import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,11 @@ public class SessionService {
             throw new NotFoundException();
         }
 
+        // Initialize users list if null
+        if (session.getUsers() == null) {
+            session.setUsers(new ArrayList<>());
+        }
+
         boolean alreadyParticipate = session.getUsers().stream().anyMatch(o -> o.getId().equals(userId));
         if(alreadyParticipate) {
             throw new BadRequestException();
@@ -64,6 +70,11 @@ public class SessionService {
         Session session = this.sessionRepository.findById(id).orElse(null);
         if (session == null) {
             throw new NotFoundException();
+        }
+
+        // Initialize users list if null
+        if (session.getUsers() == null) {
+            session.setUsers(new ArrayList<>());
         }
 
         boolean alreadyParticipate = session.getUsers().stream().anyMatch(o -> o.getId().equals(userId));
