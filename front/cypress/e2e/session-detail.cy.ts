@@ -214,7 +214,7 @@ describe('Session Detail - User participating initially', () => {
   it('should display session details correctly with user participating', () => {
     cy.url().should('include', '/sessions/detail/3');
     cy.get('h1').should('contain', 'Test');
-    cy.contains('3 attendees').should('be.visible'); // 3 car user 3 est participant
+    cy.contains('3 attendees').should('be.visible');
     
     // Should show unparticipate button
     cy.get('button').contains('Do not participate').should('be.visible');
@@ -230,7 +230,7 @@ describe('Session Detail - User participating initially', () => {
       statusCode: 200,
       body: {
         ...mockSession,
-        users: [2, 4], // User is no longer participating
+        users: [2, 4], // User 3is no longer participating
       },
     }).as('getUpdatedSession');
 
