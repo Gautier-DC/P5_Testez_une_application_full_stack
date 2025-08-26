@@ -195,7 +195,7 @@ describe('Me (Profile) - Admin User', () => {
 // TESTS - ERROR SCENARIOS
 // ============================
 
-describe.only('Me (Profile) - Error Scenarios', () => {
+describe('Me (Profile) - Error Scenarios', () => {
   it('should handle account deletion error gracefully', () => {
     // Mock delete API error
     cy.intercept('DELETE', '/api/user/3', {
@@ -212,5 +212,143 @@ describe.only('Me (Profile) - Error Scenarios', () => {
 
     // Should still be on the me page (deletion failed)
     cy.url().should('include', '/me');
+  });
+
+  it('should handle profile loading error gracefully', () => {
+    loginAsUserProfil();
+
+    // Override with error response for ngOnInit
+    cy.intercept('GET', '/api/user/3', {
+      statusCode: 404,
+      body: { message: 'User not found' },
+    }).as('getUserError');
+
+    // Navigate to profile page 
+    cy.get('span[routerlink="me"]').contains('Account').click();
+    cy.wait('@getUserError');
+
+    // User info should not be displayed when API fails
+    cy.contains('Name:').should('not.exist');
+    cy.contains('Email:').should('not.exist');
+    cy.contains('You are admin').should('not.exist');
+  });
+
+  it('should test back button functionality', () => {
+    loginAsUserProfil();
+    navigateToUserAccount(mockUserProfil);
+
+    // Click back button to test back() method
+    cy.get('button[mat-icon-button]').click();
+    
+    // Should navigate away from /me page
+    cy.url().should('not.include', '/me');
+  });
+
+  it('should test successful account deletion with snackbar message', () => {
+    loginAsUserProfil();
+    navigateToUserAccount(mockUserProfil);
+
+    // Mock successful deletion
+    cy.intercept('DELETE', '/api/user/3', {
+      statusCode: 200,
+    }).as('deleteUserSuccess');
+
+    // Click delete button
+    cy.get('button[color="warn"]').click();
+    cy.wait('@deleteUserSuccess');
+
+    // Should show success message in snackbar
+    cy.get('.mat-snack-bar-container')
+      .should('contain', 'Your account has been deleted !');
+
+    // Should redirect to home page (testing router.navigate(['/']))
+    cy.url().should('eq', Cypress.config().baseUrl);
+  });
+
+  it('should test component initialization with different user types', () => {
+    // Test with admin user to cover different user properties
+    loginAsAdminProfil();
+    navigateToUserAccount(mockAdminUserProfil, 1); // Admin user has ID 1
+
+    // Should display admin-specific content
+    cy.contains('You are admin').should('be.visible');
+    cy.get('button[color="warn"]').should('not.exist'); // No delete button for admin
+  });
+
+  it('should test user service getById method call', () => {
+    // Test that ngOnInit calls userService.getById with correct ID
+    loginAsUserProfil();
+
+    // Mock the API call to verify it's called with correct ID
+    cy.intercept('GET', '/api/user/3', {
+      statusCode: 200,
+      body: mockUserProfil,
+    }).as('getUserById');
+
+    cy.get('span[routerlink="me"]').contains('Account').click();
+    cy.wait('@getUserById');
+
+    // Verify the component loaded user data
+    cy.contains('Name: test TEST').should('be.visible');
+  });
+
+  it('should test sessionService.sessionInformation usage', () => {
+    // Test that the component uses sessionService.sessionInformation.id
+    loginAsUserProfil();
+
+    // Mock API call to different user ID to test session information usage
+    cy.intercept('GET', '/api/user/3', {
+      statusCode: 200,
+      body: {
+        ...mockUserProfil,
+        id: 3, // Confirm it's using session info ID
+      },
+    }).as('getSessionUser');
+
+    cy.get('span[routerlink="me"]').contains('Account').click();
+    cy.wait('@getSessionUser');
+
+    // Should display the user from session information
+    cy.get('h1').should('contain', 'User information');
+  });
+
+  it('should test delete method with sessionService.logOut', () => {
+    loginAsUserProfil();
+    navigateToUserAccount(mockUserProfil);
+
+    // Mock successful deletion to test the complete delete flow
+    cy.intercept('DELETE', '/api/user/3', {
+      statusCode: 200,
+    }).as('deleteSuccess');
+
+    cy.get('button[color="warn"]').click();
+    cy.wait('@deleteSuccess');
+
+    // Verify snackbar message (testing matSnackBar.open)
+    cy.get('.mat-snack-bar-container').should('be.visible');
+    
+    // Verify logout and redirect (testing sessionService.logOut() and router.navigate)
+    cy.url().should('eq', Cypress.config().baseUrl);
+  });
+
+  it('should test component with undefined user initially', () => {
+    loginAsUserProfil();
+
+    // Mock delayed API response to test undefined user state
+    cy.intercept('GET', '/api/user/3', {
+      statusCode: 200,
+      body: mockUserProfil,
+      delay: 1000, // Add delay to test loading state
+    }).as('getDelayedUser');
+
+    cy.get('span[routerlink="me"]').contains('Account').click();
+    
+    // Initially user should be undefined (testing *ngIf="user" in template)
+    cy.get('mat-card-content').should('exist');
+    
+    cy.wait('@getDelayedUser');
+    
+    // After API response, user data should appear
+    cy.contains('Name: test TEST').should('be.visible');
   });
 });

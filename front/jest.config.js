@@ -8,7 +8,7 @@ module.exports = {
   bail: false,
   verbose: false,
   collectCoverage: false,
-  coverageDirectory: "./coverage",
+  coverageDirectory: "./coverage/unit",
   coverageReporters: ["html", "text", "lcov"],
   collectCoverageFrom: ["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.d.ts"],
   testPathIgnorePatterns: ["<rootDir>/node_modules/"],
