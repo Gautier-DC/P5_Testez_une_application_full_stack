@@ -2,18 +2,7 @@
 
 A full-stack web application for yoga session management, built with Angular (frontend) and Spring Boot (backend).
 
-## 📋 Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Database Setup](#database-setup)
-- [Application Installation](#application-installation)
-- [Running the Application](#running-the-application)
-- [Testing](#testing)
-- [Coverage Reports](#coverage-reports)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-
-## 🔧 Prerequisites
+## Prerequisites
 
 Before starting, ensure you have the following installed:
 
@@ -24,7 +13,7 @@ Before starting, ensure you have the following installed:
 - **MySQL** (version 8.0+)
 - **Git**
 
-## 🗄️ Database Setup
+## Database Setup
 
 ### 1. Install MySQL
 
@@ -52,7 +41,7 @@ The database schema will be automatically created when you first run the Spring 
 - Default admin user: `yoga@studio.com` / `test!1234`
 - Sample teachers: Margot DELAHAYE, Hélène THIERCELIN
 
-## 🚀 Application Installation
+## Application Installation
 
 ### Backend (Spring Boot)
 
@@ -77,7 +66,7 @@ cd front
 npm install
 ```
 
-## ▶️ Running the Application
+## Running the Application
 
 ### 1. Start the Backend Server
 
@@ -105,7 +94,7 @@ The frontend application will be available at `http://localhost:4200`
   - Email: `yoga@studio.com`
   - Password: `test!1234`
 
-## 🧪 Testing
+## Testing
 
 ### Backend Tests (Spring Boot + JUnit)
 
@@ -221,34 +210,7 @@ open coverage/e2e/lcov-report/index.html
 └── README.md                      # This file
 ```
 
-## 🔗 API Documentation
-
-### Authentication Endpoints
-
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-
-### User Endpoints
-
-- `GET /api/user/{id}` - Get user by ID
-- `DELETE /api/user/{id}` - Delete user
-
-### Session Endpoints
-
-- `GET /api/session` - Get all sessions
-- `GET /api/session/{id}` - Get session by ID
-- `POST /api/session` - Create new session
-- `PUT /api/session/{id}` - Update session
-- `DELETE /api/session/{id}` - Delete session
-- `POST /api/session/{id}/participate/{userId}` - Join session
-- `DELETE /api/session/{id}/participate/{userId}` - Leave session
-
-### Teacher Endpoints
-
-- `GET /api/teacher` - Get all teachers
-- `GET /api/teacher/{id}` - Get teacher by ID
-
-## 🛠️ Development Commands Summary
+## Development Commands Summary
 
 ```bash
 # Backend
@@ -267,14 +229,14 @@ npm run e2e:coverage                  # Generate e2e coverage
 npm run cypress:open                  # Open Cypress GUI
 ```
 
-## 🏗️ Built With
+## Built With
 
 - **Backend**: Spring Boot 3.5, Spring Security, Spring Data JPA, JWT, MySQL
 - **Frontend**: Angular 14, Angular Material, RxJS
 - **Testing**: JUnit 5, Mockito (backend), Jest, Cypress (frontend)
 - **Coverage**: JaCoCo (backend), NYC/Istanbul (frontend)
 
-## 👥 Default Users
+## Default Users
 
 The application comes with pre-configured users:
 
